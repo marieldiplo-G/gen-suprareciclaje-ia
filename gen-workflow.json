@@ -1,0 +1,761 @@
+{
+  "name": "Gen - Asistente de rediseño de prendas con IA",
+  "nodes": [
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1",
+          "cachedResultUrl": ""
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Actuá como diseñadora de indumentaria especializada en suprareciclaje, upcycling y moda circular.\n\nRecibís el análisis técnico de UNA SOLA PRENDA, realizado desde hasta tres vistas (frente, espalda e interior/etiqueta; algunas pueden no estar disponibles). No los interpretes como prendas diferentes. Relacioná toda la información antes de proponer.\n\nADN DE MARCA (GEN):\n- Marca de diseño de indumentaria especializada en suprareciclaje y moda circular.\n- Concepto: reconstrucción y memoria.\n- Estética: contemporánea, experimental y sensible.\n- Paleta: neutros + acentos de color sutiles.\n- Prioridad: conservar la mayor cantidad posible del material original.\n- Evitar: estética excesivamente romántica, infantil o deportiva. En telas livianas, las transparencias y los plisados deben leerse como experimentales y contemporáneos, no como lencería ni como vestido de ocasión.\n\nRECURSOS CONSTRUCTIVOS DE LA MARCA (usá solo estos):\n1. Deconstrucción y aberturas: cortes verticales u horizontales que dejan ver la piel o una prenda interior; aberturas en espalda, laterales, mangas o piernas; recortes en zonas estratégicas (espalda, muslos, cintura).\n2. Superposición de paneles: paneles recortados de la propia prenda, montados de forma desfasada o asimétrica, uno sobre otro, como capas.\n3. Bordes sin terminar: orillas deshilachadas o cortadas en crudo, dejadas a la vista como decisión de diseño. Hilos sueltos en los extremos de los cortes.\n4. Costuras visibles y remates: costuras expuestas, pespuntes marcados, remates de refuerzo (presillas, cruces de hilo) en los extremos de cada corte, zurcido visible.\n5. Reubicación de avíos: botones, cierres y bolsillos desplazados o reubicados sobre los nuevos paneles; plackets asimétricos; bolsillos con costura expuesta.\n6. Tiras con argollas: usalas con moderación, solo cuando cumplan una función (cierre, acceso o ajuste) o como una decisión de diseño clara y única en la prenda. Deben ser anchas (no cintas finas), hechas con la tela de la prenda o una compatible, y cerrar con dos argollas de media luna en forma de D (metal, de rescate si es posible), colocadas juntas en el extremo de la tira: la tira pasa por ambas y funciona como hebilla de ajuste. Máximo una o dos tiras por propuesta; nunca como adorno repetido ni en puños y laterales a la vez.\n7. Patchwork: retazos de la prenda o de descarte combinados con intención gráfica.\n8. Ajuste de volumen: cuñas, insertos, aberturas laterales o paneles reubicados para ganar o quitar calce.\n\nRECURSOS PARA TELAS LIVIANAS (gasa, seda, voile, crepé fino, algodón liviano, tul, organza):\nUsalos en lugar de los cortes y bordes crudos cuando la prenda sea de tela liviana o translúcida:\n9. Plisado y plisado deformado: micro-plisados que se tuercen, ondulan o cambian de dirección en una zona, fijados con costura o presillas.\n10. Fruncido concentrado: frunces marcados en cintura, canesú, puños o escote, que generan volumen controlado y sirven también para ajustar calce.\n11. Transparencias y superposición translúcida: capas livianas sobrepuestas, o una tela liviana sobre una prenda interior o sobre otro panel, para jugar con lo que se ve y lo que se intuye.\n12. Panelado con costura invisible o francesa: unir paneles con costuras mínimas y prolijas, o dejar el revés de la costura visible como detalle fino.\n13. Dobladillos y orillas finas: dobladillo enrollado, orilla a mano o terminación en crudo muy corta (solo si el tejido lo permite), nunca cortes largos sin refuerzo.\n14. Encajes, puntillas y cintas recuperadas: reubicados como detalle de borde, sin caer en una estética romántica o infantil.\n15. Aberturas con refuerzo: cuando haya abertura en tela liviana, siempre con refuerzo (presilla, entretela o doble capa), porque estas telas se rompen en los extremos.\n- Los recursos de ambos bloques conviven: en una misma prenda se pueden combinar si el tejido lo admite.\n- Son una paleta de lenguaje. Reinterpretalos para la prenda real: no copies diseños existentes ni los reproduzcas literalmente.\n\nDATOS DE LA CLIENTA:\n- Prenda: {{ $('Formulario').first().json['Prenda'] }}\n- Estado según la clienta: {{ $('Formulario').first().json['Estado de la prenda'] || 'No indicado' }}\n- Historia de la prenda: {{ $('Formulario').first().json['Historia de la prenda'] || 'No indicada' }}\n- ¿Tiene una idea?: {{ $('Formulario').first().json['Idea previa'] }}\n- Su idea: {{ $('Formulario').first().json['Tu idea'] || 'Sin idea previa, proponer libremente' }}\n- Nivel de cambio deseado: {{ $('Formulario').first().json['Nivel de cambio'] || 'No indicado' }}\n- Qué NO modificar: {{ $('Formulario').first().json['Qué no modificar'] || 'Sin restricciones' }}\n- Uso previsto: {{ $('Formulario').first().json['Uso'] || 'No indicado' }}\n- Colores: {{ $('Formulario').first().json['Colores'] || 'Sin preferencia' }}\n- Talle habitual: {{ $('Formulario').first().json['Talle habitual'] || 'No indicado' }}\n- Talle de la prenda: {{ $('Formulario').first().json['Talle prenda'] }}\n- Calce deseado: {{ $('Formulario').first().json['Calce deseado'] }}\n- Medidas: {{ $('Formulario').first().json['Medidas'] || 'No indicadas' }}\n- Tela adicional: {{ $('Formulario').first().json['Tela adicional'] }}\n\nREGLAS:\n- El dato \"Prenda\" lo escribió la clienta y puede ser impreciso. Si el análisis de las fotos muestra un tipo de prenda, largo o silueta distinto, guiate por las fotos y mencioná en el concepto el tipo de prenda real (por ejemplo \"saco corto de terciopelo\"). El largo y la silueta de partida son siempre los que muestran las fotos, no los que indica la clienta.\n- La opción baja conserva silueta, largo y calce. La media puede modificarlos en una o dos zonas. La alta puede reinterpretar la prenda por completo, siempre que sea viable con su propia tela y se reconozca el material original.\n- Si la clienta tiene una idea, al menos UNA de las 3 propuestas debe partir de ella, reinterpretada con el ADN de marca.\n- Respetá estrictamente lo que pidió no modificar.\n- Si hay una historia, usala como inspiración conceptual en el nombre y el concepto.\n- Compará el talle de la prenda con el calce deseado. Si pide más holgura de la que la prenda permite, indicá cómo ganar volumen (paneles reubicados, cuñas o insertos de la propia prenda, aberturas laterales, superposiciones, fruncidos). No prometas un calce que la prenda no pueda dar.\n- Cada abertura o corte debe justificarse: qué deja ver (la piel o una prenda interior de la clienta) y cómo se refuerza para que sea viable y duradero (presilla, remate, doble costura).\n- Considerá el tejido real de la prenda y decilo en la propuesta:\n  · Tejido plano con cuerpo (gabardina, lino, denim, paño): admite cortes, bordes crudos y aberturas amplias.\n  · Tela liviana o translúcida (gasa, seda, voile, tul): usá plisado, fruncido, transparencias y superposición; evitá cortes grandes y bordes crudos largos.\n  · Punto o sintético que no se deshilacha: necesita una terminación visible distinta (costura expuesta, remate marcado, overlock a la vista).\n- NO menciones precios, costos, presupuestos, valores estimados ni tiempos de entrega, ni en moneda ni en categorías (barato, accesible, premium). Eso lo define el equipo de Gen por separado.\nREGLAS DE MATERIAL ADICIONAL:\n- Primero agotá los recursos de la propia prenda (paneles,  mangas, bolsillos, márgenes de costura).\n- Sumá tela solo si hace falta para el calce o el concepto, en la menor cantidad posible.\n- Si la clienta eligió \"No, solo con el material de mi prenda\", NO sumes tela; si el calce no se puede lograr, decilo.\n- La tela sumada debe ser la MÁS CONVENIENTE para el diseño, aunque haya que comprarla. Elegí por compatibilidad con la prenda: tipo de fibra, peso, caída, textura y comportamiento al lavado. Indicá de forma genérica qué tela es (ej. \"lino lavado gris\", \"gabardina de algodón crudo\"), por qué es la mejor opción y si conviene conseguirla nueva, de descarte o de deadstock. Debe quedar visible como decisión de diseño con una variación sutil de tono o textura respecto de la prenda. (inserto, panel, franja, superposición, costura expuesta).\n- Describí la tela solo de forma genérica (ej. \"retazo de lana gris\", \"popelín crudo\").\n- No inventes materiales que no se relacionen con la prenda analizada.\n- Las mangas se pueden intervenir cuando aporten al diseño. Si proponés bandas o franjas horizontales (en mangas o en pantalones), deben ser de un tono parecido al de la prenda (tono sobre tono o variaciones sutiles del mismo color), nunca de colores contrastantes: así se leen contemporáneas y no como estética deportiva. Si la clienta pidió no modificar las mangas, respetalo estrictamente.\n- Si alguna vista figura como \"VISTA NO PROPORCIONADA\", trabajá solo con lo que sí se ve. No inventes forrería, etiqueta ni detalles de espalda. No propongas intervenciones en zonas que no pudiste ver (por ejemplo, aberturas en la espalda o recuperar el forro) y, si la falta de información limita alguna propuesta, mencionalo brevemente en el concepto.\n\nORDEN OBLIGATORIO:\n- OPCIÓN 1 = complejidad BAJA: intervención sutil, casi toda la prenda intacta.\n  · Tela con cuerpo: costuras visibles, bordes crudos en un detalle, reubicación de avíos o bolsillo, una abertura pequeña con remate.\n  · Tela liviana: un fruncido o plisado en una sola zona, un encaje reubicado, una orilla fina.\n- OPCIÓN 2 = complejidad MEDIA: intervención visible, reconstrucción parcial.\n  · Tela con cuerpo: paneles superpuestos en una o dos zonas, forrería a la vista, aberturas con refuerzos, plackets asimétricos.\n  · Tela liviana: capas translúcidas superpuestas, plisado deformado en una zona amplia, fruncidos que cambian el calce.\n- OPCIÓN 3 = complejidad ALTA: deconstrucción fuerte, cambio de silueta.\n  · Tela con cuerpo: aberturas amplias (espalda, laterales, piernas), reconstrucción por paneles, capas desfasadas, tiras y lazadas.\n  · Tela liviana: reconstrucción por paneles plisados, superposición de capas con transparencias, cambio de silueta con fruncidos y aberturas reforzadas.\nLas tres deben ser claramente diferentes entre sí, con identidad visual propia, y respetar el ADN de marca.\n Aun en la alta, mantené el tipo de prenda base (por ejemplo, un saco sigue siendo un saco) salvo que la clienta pida lo contrario.\n\nPARA CADA OPCIÓN INDICÁ:\n1. Nombre de la propuesta.\n2. Concepto.\n3. Qué partes de la prenda se conservan.\n4. Qué partes se modifican.\n5. Recursos constructivos o de deconstrucción (solo de las listas de la marca).\n6. Resultado visual esperado.\n7. Nivel de complejidad: bajo, medio o alto.\n8. Material adicional: NO / SÍ.\n9. Si es SÍ: dónde se usa, tipo de tela, color sugerido, cantidad aproximada (poca / media / mucha) y por qué es la más conveniente (peso, caída y textura compatibles con la prenda).\n10. PROMPT_IMAGEN:El PROMPT_IMAGEN debe describir únicamente cambios visibles desde el FRENTE de la prenda. Si la propuesta tiene intervenciones en la espalda, descríbelas en el texto de la propuesta pero no en el PROMPT_IMAGEN. (en inglés) una sola oración larga que describa los cambios sobre la prenda de la foto (zona exacta, técnica, colores, texturas), indicando que se conserve el tipo de prenda, su pose y el fondo, con resultado fotorrealista, textura de tela real y costuras artesanales visibles. Si la tela es liviana, incluir \"preserve the translucency and drape of the lightweight fabric\". Sin nombres de marcas ni de personas.\n\nFORMATO: separá las opciones con estos marcadores exactos, cada uno en su propia línea, y no escribas nada antes del primero ni después de la última opción:\n===OPCION_1===\n===OPCION_2===\n===OPCION_3===\n\nANÁLISIS DE LA PRENDA:\n{{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 6000,
+          "temperature": 0.8
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        720,
+        32
+      ],
+      "id": "7f5ceb8a-73c3-4bf9-9f9c-d18359f71578",
+      "name": "Message a model"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        416,
+        144
+      ],
+      "id": "dfc066b5-20ef-4bde-98ce-945727c1a605",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst vistas = ['FRENTE', 'ESPALDA', 'INTERIOR / ETIQUETA'];\n\nfunction buscarTexto(obj) {\n  if (!obj || typeof obj !== 'object') return '';\n  if (typeof obj.text === 'string' && obj.text.trim()) return obj.text;\n  for (const clave of Object.keys(obj)) {\n    const encontrado = buscarTexto(obj[clave]);\n    if (encontrado) return encontrado;\n  }\n  return '';\n}\n\nconst analisis = vistas.map((vista, i) => ({\n  vista,\n  analisis: (items[i] ? buscarTexto(items[i].json) : '') ||\n    'VISTA NO PROPORCIONADA: la clienta no subió esta foto. No inventes detalles de esta vista.'\n}));\n\nreturn [{ json: { analisis_completo: analisis } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        208
+      ],
+      "id": "0af6d4fb-70cb-4de4-91aa-17643d7ca892",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "function buscarTexto(obj) {\n  if (!obj || typeof obj !== 'object') return '';\n  if (typeof obj.text === 'string' && obj.text.includes('===OPCION_1===')) return obj.text;\n  for (const clave of Object.keys(obj)) {\n    const encontrado = buscarTexto(obj[clave]);\n    if (encontrado) return encontrado;\n  }\n  return '';\n}\n\nconst texto = buscarTexto($json);\nconst partes = texto.split(/===OPCION_\\d===/).map(p => p.trim()).filter(Boolean);\n\nif (partes.length < 3) {\n  throw new Error('No se encontraron las 3 opciones. Inicio del texto: ' + JSON.stringify($json).slice(0, 400));\n}\n\nreturn {\n  json: {\n    texto_baja: partes[0],\n    texto_media: partes[1],\n    texto_alta: partes[2]\n  },\n  binary: $('Formulario').first().binary\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        48
+      ],
+      "id": "b741f3f3-67cc-4a03-a6bb-43c0b9ffdcaa",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "edit",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-image-2"
+        },
+        "prompt": "=Actuá como diseñadora de indumentaria especializada en suprareciclaje, upcycling y moda circular.\n\nUsá la foto de la prenda original (vista frontal) como referencia principal. Conservá su material, estructura, color y características reconocibles. No la reemplaces por otra prenda: la propuesta debe verse como una transformación de la prenda fotografiada.\n\nConservá el tipo de prenda, el largo, el calce y la silueta de la foto original; la prenda debe reconocerse de inmediato. Respetá el textil original (si es terciopelo, mostrá el pelo suave y el brillo mate; nunca como jean ni algodón plano) y mantené el estampado como protagonista.\n\nEstética: contemporánea, experimental y sensible; reconstrucción y memoria; neutros con acentos de color sutiles; costuras visibles; deconstrucción, patchwork y superposición cuando correspondan. Evitar lo romántico, infantil o deportivo. Evitá lazos y moños.\n\nSi la propuesta incluye material adicional, mostralo como paneles o insertos visibles pero armónicos con la prenda, con una variación sutil de tono o textura, nunca con un contraste fuerte.\n\nTIRAS: si la propuesta incluye una tira, dibujá una sola o dos como máximo, anchas y planas, con dos argollas metálicas de media luna en forma de D juntas en el extremo, funcionando como hebilla (two flat D-shaped half-moon metal rings, clearly visible). Nunca cintas finas, moños, lazos ni varias tiras repetidas.\n\nGenerá un render profesional de diseño de indumentaria: mostrá la prenda sola, en vista frontal, sobre un maniquí o plana sobre fondo neutro liso, con iluminación pareja. Sin persona, sin pantalón ni otras prendas. Que se vean con claridad la silueta, las intervenciones y los detalles constructivos.\n\nNo incluyas texto, letras, títulos ni marcas de agua en la imagen.\n\nSi la propuesta incluye aberturas, representalas como cortes reales en la tela, con bordes terminados (pespunte visible o borde crudo prolijo), que dejan ver la piel o una prenda interior; nunca como forro asomando ni como franjas de color plano. No cubras botones, ojales ni cierres con parches. Las únicas intervenciones permitidas son las descritas en la propuesta.\n\nOnly modify the sleeves or trousers if the proposal explicitly describes it. If horizontal stripes or bands are described, render them in a tone close to the garment color (tone-on-tone), using the fabric weight and texture described in the proposal, with visible stitching. Never use high-contrast sporty color bands.\n\nPROPUESTA A REPRESENTAR (nivel de transformación BAJO: intervención sutil, casi toda la prenda intacta):\n{{ $json.texto_baja }}",
+        "images": {
+          "values": [
+            {
+              "binaryPropertyName": "Foto_de_frente_de_la_prenda"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        1296,
+        0
+      ],
+      "id": "42958280-0bca-4aa9-8efc-d0b46aa4a8b5",
+      "name": "Imagen baja"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "edit",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-image-2",
+          "mode": "list"
+        },
+        "prompt": "=Actuá como diseñadora de indumentaria especializada en suprareciclaje, upcycling y moda circular.\n\nUsá la foto de la prenda original (vista frontal) como referencia principal. Conservá su material, color y características reconocibles; la propuesta debe verse como una transformación de la prenda fotografiada.\n\nConservá la base reconocible de la prenda (tipo de prenda, textil y estampado), pero podés modificar el largo, el calce o la forma de algunas partes si la propuesta lo describe. Respetá el textil original (si es terciopelo, mostrá el pelo suave y el brillo mate; nunca como jean ni algodón plano) y mantené el estampado como protagonista.\n\nEstética: contemporánea, experimental y sensible; reconstrucción y memoria; neutros con acentos de color sutiles; costuras visibles; deconstrucción, patchwork y superposición cuando correspondan. Evitar lo romántico, infantil o deportivo. Evitá lazos y moños.\n\nSi la propuesta incluye material adicional, mostralo como paneles o insertos visibles pero armónicos con la prenda, con una variación sutil de tono o textura, nunca con un contraste fuerte.\n\nTIRAS: si la propuesta incluye una tira, dibujá una sola o dos como máximo, anchas y planas, con dos argollas metálicas de media luna en forma de D juntas en el extremo, funcionando como hebilla (two flat D-shaped half-moon metal rings, clearly visible). Nunca cintas finas, moños, lazos ni varias tiras repetidas.\n\nGenerá un render profesional de diseño de indumentaria: mostrá la prenda sola, en vista frontal, sobre un maniquí o plana sobre fondo neutro liso, con iluminación pareja. Sin persona, sin pantalón ni otras prendas. Que se vean con claridad la silueta, las intervenciones y los detalles constructivos.\n\nNo incluyas texto, letras, títulos ni marcas de agua en la imagen.\n\nSi la propuesta incluye aberturas, representalas como cortes reales en la tela, con bordes terminados (pespunte visible o borde crudo prolijo), que dejan ver la piel o una prenda interior; nunca como forro asomando ni como franjas de color plano. No cubras botones, ojales ni cierres con parches. Las únicas intervenciones permitidas son las descritas en la propuesta.\n\nOnly modify the sleeves or trousers if the proposal explicitly describes it. If horizontal stripes or bands are described, render them in a tone close to the garment color (tone-on-tone), using the fabric weight and texture described in the proposal, with visible stitching. Never use high-contrast sporty color bands.\n\nPROPUESTA A REPRESENTAR (nivel de transformación MEDIO: intervención visible y reconstrucción parcial):\n{{ $json.texto_media }}",
+        "images": {
+          "values": [
+            {
+              "binaryPropertyName": "Foto_de_frente_de_la_prenda"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        1312,
+        192
+      ],
+      "id": "ff6b73f7-d5b3-469c-9afe-04be033690fb",
+      "name": "Imagen media"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "edit",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-image-2",
+          "mode": "list",
+          "cachedResultName": "GPT-IMAGE-2"
+        },
+        "prompt": "=Actuá como diseñadora de indumentaria especializada en suprareciclaje, upcycling y moda circular.\n\nUsá la foto de la prenda original (vista frontal) como referencia del material y el estampado.\n\nPodés reinterpretar la silueta, el largo, el calce y la estructura de la prenda, siempre que se note que está hecha con el material original. Respetá el textil original (si es terciopelo, mostrá el pelo suave y el brillo mate; nunca como jean ni algodón plano) y su estampado. La propuesta debe ser viable de construir con la tela de la prenda.\n\nEstética: contemporánea, experimental y sensible; reconstrucción y memoria; neutros con acentos de color sutiles; costuras visibles; deconstrucción, patchwork y superposición cuando correspondan. Evitar lo romántico, infantil o deportivo. Evitá lazos y moños.\n\nSi la propuesta incluye material adicional, mostralo como paneles o insertos visibles pero armónicos con la prenda, con una variación sutil de tono o textura, nunca con un contraste fuerte.\n\nTIRAS: si la propuesta incluye una tira, dibujá una sola o dos como máximo, anchas y planas, con dos argollas metálicas de media luna en forma de D juntas en el extremo, funcionando como hebilla (two flat D-shaped half-moon metal rings, clearly visible). Nunca cintas finas, moños, lazos ni varias tiras repetidas.\n\nGenerá un render profesional de diseño de indumentaria: mostrá la prenda sola, en vista frontal, sobre un maniquí o plana sobre fondo neutro liso, con iluminación pareja. Sin persona, sin pantalón ni otras prendas. Que se vean con claridad la silueta, las intervenciones y los detalles constructivos.\n\nNo incluyas texto, letras, títulos ni marcas de agua en la imagen.\n\nSi la propuesta incluye aberturas, representalas como cortes reales en la tela, con bordes terminados (pespunte visible o borde crudo prolijo), que dejan ver la piel o una prenda interior; nunca como forro asomando ni como franjas de color plano. No cubras botones, ojales ni cierres con parches. Las únicas intervenciones permitidas son las descritas en la propuesta.\n\nOnly modify the sleeves or trousers if the proposal explicitly describes it. If horizontal stripes or bands are described, render them in a tone close to the garment color (tone-on-tone), using the fabric weight and texture described in the proposal, with visible stitching. Never use high-contrast sporty color bands.\n\nPROPUESTA A REPRESENTAR (nivel de transformación ALTO: deconstrucción fuerte y cambio de silueta):\n{{ $json.texto_alta }}",
+        "images": {
+          "values": [
+            {
+              "binaryPropertyName": "Foto_de_frente_de_la_prenda"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        1472,
+        448
+      ],
+      "id": "37e99cc6-05b3-46da-901f-4a14a1badea6",
+      "name": "Imagen alta"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1696,
+        432
+      ],
+      "id": "d4fecd22-300b-43df-9992-a9d51c7ba360",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst form = $('Formulario').first().json;\nconst cod1 = $('Code in JavaScript1').first().json;\n\nconst nombreClienta = form['Nombre'] || '';   // <- ajustá al nombre real del campo\nconst niveles = ['Intervención sutil', 'Intervención visible', 'Reconstrucción profunda'];\nconst claves = ['baja', 'media', 'alta'];\n\nfunction limpiar(texto) {\n  const sinPrompt = texto.split(/\\n\\s*\\**\\s*10\\.\\s*\\**\\s*PROMPT[_ ]IMAGEN/i)[0];\n  return sinPrompt\n    .replace(/===OPCION_\\d===/g, '')\n    .trim()\n    .split('\\n')\n    .filter(l => l.trim())\n    .filter(l => !/(precio|costo|valor|presupuesto|\\$|USD|ARS)/i.test(l))\n    .map(l => l.replace(/^\\s*(\\d+)\\.\\s*([^:]+):/, '<strong>$2:</strong>'))\n    .map(l => `<p style=\"margin:0 0 8px 0;\">${l}</p>`)\n    .join('');\n}\n\nconst fmt = n => '$' + Number(n).toLocaleString('es-AR');\n\nlet bloques = '';\nconst binary = {};\n\nitems.forEach((item, i) => {\n  const texto = cod1['texto_' + claves[i]] || '';\n  \n  bloques += `\n    <div style=\"border-top:1px solid #d9d4cc; padding:24px 0;\">\n      <p style=\"margin:0; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:#8a8378;\">\n        Opción ${i + 1} · ${niveles[i]}\n      </p>\n      <div style=\"margin-top:12px; font-size:15px; line-height:1.6; color:#2b2926;\">\n        ${limpiar(texto)}\n      </div>\n      \n      <p style=\"margin:12px 0 0 0; font-size:13px; color:#8a8378;\">\n        Mirá la imagen adjunta <em>propuesta_${i + 1}.png</em>.\n      </p>\n    </div>`;\n  if (item.binary && item.binary.data) {\n    binary[`imagen_${i + 1}`] = { ...item.binary.data, fileName: `propuesta_${i + 1}.png` };\n  }\n});\n\nconst html = `\n<div style=\"max-width:620px; margin:0 auto; font-family:Helvetica,Arial,sans-serif; color:#2b2926;\">\n  <h1 style=\"font-weight:400; letter-spacing:6px; font-size:28px; margin:0 0 4px 0;\">GEN</h1>\n  <p style=\"margin:0 0 24px 0; font-size:12px; color:#8a8378;\">Moda circular · Reconstrucción y memoria</p>\n\n  <p style=\"font-size:15px; line-height:1.6;\">Hola${nombreClienta ? ' ' + nombreClienta : ''},</p>\n  <p style=\"font-size:15px; line-height:1.6;\">\n    Gracias por confiarnos tu prenda. La miramos con atención y \n     pensamos tres caminos posibles para reconstruirla. Van de un cambio sutil a una transformación profunda.\n    Las imágenes son una referencia visual de cada idea, no un resultado exacto: el diseño final se ajusta\n    a la tela y al estado real de tu prenda.\n  </p>\n\n  ${bloques}\n\n  <div style=\"border-top:1px solid #d9d4cc; padding-top:24px; font-size:15px; line-height:1.6;\">\n    <p>¿Cuál te llamó más la atención? Respondé este mail contándonos tu elección, o si querés mezclar\n    elementos de distintas propuestas, y coordinamos los próximos pasos.</p>\n        <p>El valor de cada propuesta te lo enviamos por separado, una vez que elijas tu opción.</p>\n    <p style=\"margin-top:20px;\">Un abrazo,<br><strong>Equipo Gen</strong><br>\n    <span style=\"font-size:13px; color:#8a8378;\">Instagram: @somosigriega</span></p>\n  </div>\n</div>`;\n\nreturn [{\n  json: {\n    to: form['Email'],            // <- ajustá al nombre real del campo\n    subject: 'Tus 3 propuestas para reconstruir tu prenda | Gen',\n    html\n  },\n  binary\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        432
+      ],
+      "id": "2c9bd225-f7c4-47d4-9d7d-8c4a8bc28b6d",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.html }}",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "imagen_1"
+              },
+              {
+                "property": "imagen_2"
+              },
+              {
+                "property": "imagen_3"
+              }
+            ]
+          },
+          "bccList": "TU_MAIL@ejemplo.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2128,
+        432
+      ],
+      "id": "3740c743-2cb1-417f-83cb-3dfe1991f8e2",
+      "name": "Send a message"
+    },
+    {
+      "parameters": {
+        "formTitle": "Gen · Estudio de diseño y suprareciclaje",
+        "formDescription": "Gen es un estudio de diseño de indumentaria especializado en suprareciclaje. Trabajamos desde la reconstrucción y la memoria: cada prenda conserva su historia y se transforma en una pieza nueva.\n\nCompletá el formulario y subí tres fotos de tu prenda (frente, espalda e interior o etiqueta). Con esa información desarrollaremos tres propuestas de transformación, de intervención baja, media y alta, y te las enviaremos por mail.\n\nFormato de las fotos: JPG o PNG.\n\nUtilizamos tus fotos y datos únicamente para elaborar las propuestas y contactarte sobre tu prenda.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nombre",
+              "placeholder": "Tu nombre",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "Acá te enviamos las propuestas",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Instagram",
+              "placeholder": "@tuusuario (opcional)"
+            },
+            {
+              "fieldLabel": "Prenda",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Blazer"
+                  },
+                  {
+                    "option": "Campera"
+                  },
+                  {
+                    "option": "Camisa"
+                  },
+                  {
+                    "option": "Pantalón"
+                  },
+                  {
+                    "option": "Vestido"
+                  },
+                  {
+                    "option": "Abrigo"
+                  },
+                  {
+                    "option": "Otra"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Foto de frente de la prenda",
+              "fieldType": "file",
+              "acceptFileTypes": ".jpg, .jpeg, .png, .webp",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Foto de espalda de la prenda",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".jpg, .jpeg, .png, .webp",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Foto del interior de la prenda",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".jpg, .jpeg, .png, .webp",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Estado de la prenda",
+              "fieldType": "textarea",
+              "placeholder": "¿Tiene roturas, manchas o desgastes que quieras contarnos? (opcional)"
+            },
+            {
+              "fieldLabel": "Historia de la prenda",
+              "fieldType": "textarea",
+              "placeholder": "¿De quién era? ¿Qué recuerdos tiene? Nos sirve como inspiración (opcional)"
+            },
+            {
+              "fieldLabel": "Idea previa",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Sí, tengo una idea clara"
+                  },
+                  {
+                    "option": "Tengo algunas ideas sueltas"
+                  },
+                  {
+                    "option": "No, quiero que ustedes me propongan"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Tu idea",
+              "fieldType": "textarea",
+              "placeholder": "Contanos qué te imaginás para esta prenda (opcional)"
+            },
+            {
+              "fieldLabel": "Nivel de cambio",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Sutil"
+                  },
+                  {
+                    "option": "Intermedio"
+                  },
+                  {
+                    "option": "Radical"
+                  },
+                  {
+                    "option": "No sé"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Qué no modificar",
+              "placeholder": "Ej: los botones, un bolsillo, el color (opcional)"
+            },
+            {
+              "fieldLabel": "Uso",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Diario"
+                  },
+                  {
+                    "option": "Trabajo"
+                  },
+                  {
+                    "option": "Ocasiones especiales"
+                  },
+                  {
+                    "option": "No sé"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Colores",
+              "placeholder": "Colores que te gustan o querés evitar (opcional)"
+            },
+            {
+              "fieldLabel": "Talle habitual",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "XS"
+                  },
+                  {
+                    "option": "S"
+                  },
+                  {
+                    "option": "M"
+                  },
+                  {
+                    "option": "L"
+                  },
+                  {
+                    "option": "XL"
+                  },
+                  {
+                    "option": "XXL"
+                  },
+                  {
+                    "option": "Otro"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Talle prenda",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "XS"
+                  },
+                  {
+                    "option": "S"
+                  },
+                  {
+                    "option": "M"
+                  },
+                  {
+                    "option": "L"
+                  },
+                  {
+                    "option": "XL"
+                  },
+                  {
+                    "option": "XXL"
+                  },
+                  {
+                    "option": "Otro"
+                  },
+                  {
+                    "option": "No sé"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Calce deseado",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Al cuerpo / ajustada"
+                  },
+                  {
+                    "option": "Mi talle, calce normal"
+                  },
+                  {
+                    "option": "Un poco holgada (un talle más)"
+                  },
+                  {
+                    "option": "Oversize (dos talles o más)"
+                  },
+                  {
+                    "option": "No sé, que me propongan"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Medidas",
+              "fieldType": "textarea",
+              "placeholder": "Busto, cintura, cadera y largo de espalda en cm (opcional)"
+            },
+            {
+              "fieldLabel": "Tela adicional",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "No, solo con el material de mi prenda"
+                  },
+                  {
+                    "option": "Sí, con tela de descarte de la marca"
+                  },
+                  {
+                    "option": "Sí, voy a aportar otra prenda o tela (la coordinamos después)"
+                  },
+                  {
+                    "option": "Sí, lo que ustedes consideren mejor"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Consentimiento",
+              "fieldType": "checkbox",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Acepto que usen mis fotos y datos para esta consulta"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -144,
+        16
+      ],
+      "id": "ad4a840d-4a74-4aed-9669-458a682daf0f",
+      "name": "Formulario"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.1",
+          "mode": "list",
+          "cachedResultName": "GPT-5.1"
+        },
+        "text": "Actuá como diseñadora de indumentaria experta en moldería, ingeniería textil y suprareciclaje (upcycling).\n\nEstás viendo la vista de FRENTE de UNA prenda en desuso. Describí únicamente lo que se observa. Si algo no se puede determinar, escribí \"no determinable\". NO propongas transformaciones.\n\nDevolvé la información de forma técnica y estructurada:\n1. Tipo de prenda y silueta estructural (cortes, costuras principales, largo, calce).\n2. Textil: tipo, trama, peso estimado y textura. Indicá explícitamente una de estas categorías: \"tejido plano con cuerpo\", \"tela liviana o translúcida\" o \"punto/sintético\". Indicá si el borde se deshilacha o no, según lo que se vea.\n3. Forrería interior: material, color y estado (solo si es visible desde el frente).\n4. Elementos salvables: cuellos, solapas, puños, botones, cierres, bolsillos, paneles principales, etc. Indicá cuáles están en buen estado.\n5. Paleta dominante del textil EXTERIOR en códigos HEX (mínimo 3, máximo 6). No incluyas el color del forro: indicalo aparte como \"Color del forro: ...\".\n6. Estado general: desgastes, manchas, roturas, zonas debilitadas y zonas con mayor aprovechamiento.\n7. Dimensiones aproximadas observables: largo relativo (corto, medio, largo), amplitud (ajustado, recto, oversize) y presencia de márgenes de costura o dobladillos que permitan ganar tela.\n\nEn esta vista poné especial foco en el cierre frontal, el cuello, los bolsillos y los avíos (botones, cierres). No inventes detalles que no se vean. No menciones marcas ni personas.",
+        "inputType": "base64",
+        "binaryPropertyName": "Foto_de_frente_de_la_prenda",
+        "options": {
+          "maxTokens": 1500
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        80,
+        -16
+      ],
+      "id": "a1e6bab0-12e6-4142-95b0-d63a9dc79fb2",
+      "name": "Analyze image"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.1",
+          "mode": "list",
+          "cachedResultName": "GPT-5.1"
+        },
+        "text": "Actuá como diseñadora de indumentaria experta en moldería, ingeniería textil y suprareciclaje (upcycling).\n\nEstás viendo la vista de ESPALDA de UNA prenda en desuso. Describí únicamente lo que se observa. Si algo no se puede determinar, escribí \"no determinable\". NO propongas transformaciones.\n\nDevolvé la información de forma técnica y estructurada:\n1. Tipo de prenda y silueta estructural (cortes, costuras principales, largo, calce).\n2. Textil: tipo, trama, peso estimado y textura. Indicá explícitamente una de estas categorías: \"tejido plano con cuerpo\", \"tela liviana o translúcida\" o \"punto/sintético\". Indicá también si el borde se deshilacha o no (según lo que se vea).\n3. Forrería interior: material, color y estado (si es visible).\n4. Elementos salvables: cuellos, solapas, puños, botones, cierres, bolsillos, paneles principales, etiquetas, etc. Indicá cuáles están en buen estado.\n5. Paleta dominante del textil EXTERIOR en códigos HEX (mínimo 3, máximo 6). No incluyas el color del forro: indicalo aparte como \"Color del forro: ...\".\n6. Estado general: desgastes, manchas, roturas, zonas debilitadas y zonas con mayor aprovechamiento.\n7. Dimensiones aproximadas observables: largo relativo (corto, medio, largo), amplitud (ajustado, recto, oversize) y presencia de márgenes de costura o dobladillos que permitan ganar tela.\nNo inventes detalles que no se vean. No menciones marcas ni personas.",
+        "inputType": "base64",
+        "binaryPropertyName": "Foto_de_espalda_de_la_prenda",
+        "options": {
+          "maxTokens": 1500
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        112,
+        192
+      ],
+      "id": "42f7cf26-a1fc-4e0f-aca4-2c18fc4ac887",
+      "name": "Analyze image1"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5.1",
+          "mode": "list",
+          "cachedResultName": "GPT-5.1"
+        },
+        "text": "Actuá como diseñadora de indumentaria experta en moldería, ingeniería textil y suprareciclaje (upcycling).\n\nEstás viendo la vista de INTERIOR Y ETIQUETA de UNA prenda en desuso. Describí únicamente lo que se observa. Si algo no se puede determinar, escribí \"no determinable\". NO propongas transformaciones.\n\nDevolvé la información de forma técnica y estructurada:\n1. Tipo de prenda y silueta estructural (cortes, costuras principales, largo, calce).\n2. Textil: tipo, trama, peso estimado y textura. Si la etiqueta indica composición, transcribila tal cual. Indicá explícitamente una de estas categorías: \"tejido plano con cuerpo\", \"tela liviana o translúcida\" o \"punto/sintético\". Indicá si el borde se deshilacha o no, según lo que se vea.\n3. Forrería interior: material, color y estado (si es visible).\n4. Elementos salvables visibles desdeel interior: forro,bolsillos internos, etiquetas, margenes de costura, etc. Indicá cuáles están en buen estado.\n5. Paleta dominante del textil EXTERIOR en códigos HEX (mínimo 3, máximo 6). No incluyas el color del forro: indicalo aparte como \"Color del forro: ...\"..\n6. Estado general: desgastes, manchas, roturas, zonas debilitadas y zonas con mayor aprovechamiento.\n\nEn esta vista poné especial foco en la forrería, las costuras internas, los márgenes de costura (si hay tela para ganar) y la etiqueta. No inventes detalles que no se vean. Si algo no se puede leer, escribí \"no determinable\".",
+        "inputType": "base64",
+        "binaryPropertyName": "Foto_del_interior_de_la_prenda",
+        "options": {
+          "maxTokens": 1500
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        96,
+        368
+      ],
+      "id": "e253ecaa-943a-4c3f-aa7f-cf1ed57309df",
+      "name": "Analyze image2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Imagen baja",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Imagen media",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Imagen alta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Imagen alta": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Imagen baja": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Imagen media": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formulario": {
+      "main": [
+        [
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Analyze image1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Analyze image2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Analyze image2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "nodeGroups": []
+}
