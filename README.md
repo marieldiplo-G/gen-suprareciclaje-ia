@@ -2,7 +2,7 @@
 
 Trabajo Final Integrador · Diplomatura en IA Aplicada a Entornos Digitales de Gestión · FCE-UBA · Cohorte 2026
 
-**Autora:** [TU NOMBRE]
+**Autora:** Mariel Herbón
 
 ---
 
