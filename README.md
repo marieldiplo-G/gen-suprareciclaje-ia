@@ -51,7 +51,7 @@ Un workflow de **n8n** que recibe una prenda por formulario y le devuelve a la c
 
 **Opción A: probar el formulario publicado**
 
-URL: `https://igriega.app.n8n.cloud/form/e59ff510-5495-41ce-b206-7e4182447ff2` (activo hasta 15 de Noviembre)
+URL: `https://igriega.app.n8n.cloud/form/e59ff510-5495-41ce-b206-7e4182447ff2` (activo hasta el 30 de Noviembre)
 
 1. Completá los datos y subí las tres fotos.
 2. Aceptá el consentimiento y enviá.
